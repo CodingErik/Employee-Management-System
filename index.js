@@ -52,16 +52,16 @@ function departmentsChoices() {
             name: "choice",
             type: "list",
             message: "What would you like to do?",
-            choices: ["Add departments, roles, employees", "View departments, roles, employees", "Update employee roles"]
+            choices: ['Add departments', 'Add roles', 'Add employees']
         })
         .then(function (answer) {
             //  switch(answer.choice)
             let key = answer.choice;
 
             switch (key) {
-                case "Add departments, roles, employees": return console.log(`add`);
-                case "View departments, roles, employees": return console.log(`view`);
-                case "Update employee role": return console.log(`update`);
+                case "Add departments": return `departements`;
+                case "Add roles": return `roles`;
+                case "Add employees": return `employees`;
                 default: return connection.end();;
             }
         });
