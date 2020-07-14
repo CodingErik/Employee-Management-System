@@ -37,7 +37,7 @@ function start() {
             let key = answer.choice;
 
             switch (key) {
-                case "Add departments, roles, employees": return console.log(`add`);
+                case "Add departments, roles, employees": return Add();
                 case "View departments, roles, employees": return console.log(`view`);
                 case "Update employee role": return console.log(`update`);
                 default: return connection.end();;
@@ -46,7 +46,7 @@ function start() {
 }
 
 
-function departmentsChoices() {
+function Add() {
     inquirer
         .prompt({
             name: "choice",
@@ -59,9 +59,30 @@ function departmentsChoices() {
             let key = answer.choice;
 
             switch (key) {
-                case "Add departments": return `departements`;
-                case "Add roles": return `roles`;
-                case "Add employees": return `employees`;
+                case "Add departments": return  console.log(`departements`);
+                case "Add roles": return  console.log(`roles`);
+                case "Add employees": return  console.log(`employees`);
+                default: return connection.end();;
+            }
+        });
+}
+
+function View() {
+    inquirer
+        .prompt({
+            name: "choice",
+            type: "list",
+            message: "What would you like to do?",
+            choices: ['View departments', 'View roles', 'View employees']
+        })
+        .then(function (answer) {
+            //  switch(answer.choice)
+            let key = answer.choice;
+
+            switch (key) {
+                case "View departments": return  console.log(`departements`);
+                case "View roles": return  console.log(`roles`);
+                case "View employees": return  console.log(`employees`);
                 default: return connection.end();;
             }
         });
