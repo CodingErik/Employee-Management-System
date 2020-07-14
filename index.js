@@ -20,6 +20,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
+    console.log(`sql is running`); 
     start();
 });
 
@@ -39,8 +40,8 @@ function start() {
             switch (key) {
                 case "Add departments, roles, employees": return Add();
                 case "View departments, roles, employees": return View();
-                case "Update employee role": return update();
-                default: return connection.end();
+                case "Update employee roles": return update();
+                default: return;
             }
         });
 }
@@ -89,6 +90,7 @@ function View() {
 }
 
 function update() {
+    console.log(`inside update function`)
     connection.query("SELECT * FROM employee", function (err, results) {
         if (err) throw err;
         inquirer
@@ -97,15 +99,15 @@ function update() {
                 type: "list",
                 message: "which employee would you like to update?",
                 choices: function () {
-                    results.forEach(e => e.name);
+                    return results; 
                 }
             })
             .then(function (answer) {
                 console.log(answer); 
                 connection.end(); 
             });
-    })
-}
+    }); 
+}; 
 
 
 
