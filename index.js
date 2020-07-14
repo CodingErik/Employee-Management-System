@@ -17,11 +17,11 @@ var connection = mysql.createConnection({
 });
 
 // connect to the mysql server and sql database
-// connection.connect(function (err) {
-//     if (err) throw err;
-//     // run the start function after the connection is made to prompt the user
-//     start();
-// });
+connection.connect(function (err) {
+    if (err) throw err;
+    // run the start function after the connection is made to prompt the user
+    start();
+});
 
 // function which prompts the user for what action they should take
 function start() {
@@ -38,9 +38,9 @@ function start() {
 
             switch (key) {
                 case "Add departments, roles, employees": return Add();
-                case "View departments, roles, employees": return console.log(`view`);
-                case "Update employee role": return console.log(`update`);
-                default: return connection.end();;
+                case "View departments, roles, employees": return View();
+                case "Update employee role": return update();
+                default: return connection.end();
             }
         });
 }
@@ -59,9 +59,9 @@ function Add() {
             let key = answer.choice;
 
             switch (key) {
-                case "Add departments": return  console.log(`departements`);
-                case "Add roles": return  console.log(`roles`);
-                case "Add employees": return  console.log(`employees`);
+                case "Add departments": return console.log(`departements`);
+                case "Add roles": return console.log(`roles`);
+                case "Add employees": return console.log(`employees`);
                 default: return connection.end();;
             }
         });
@@ -80,13 +80,37 @@ function View() {
             let key = answer.choice;
 
             switch (key) {
-                case "View departments": return  console.log(`departements`);
-                case "View roles": return  console.log(`roles`);
-                case "View employees": return  console.log(`employees`);
+                case "View departments": return console.log(`departements`);
+                case "View roles": return console.log(`roles`);
+                case "View employees": return console.log(`employees`);
                 default: return connection.end();;
             }
         });
 }
+
+function update() {
+    connection.query("SELECT * FROM employee", function (err, results) {
+        if (err) throw err;
+        inquirer
+            .prompt({
+                name: "choice",
+                type: "list",
+                message: "which employee would you like to update?",
+                choices: function () {
+                    results.forEach(e => e.name);
+                }
+            })
+            .then(function (answer) {
+                console.log(answer); 
+                connection.end(); 
+            });
+    })
+}
+
+
+
+
+
 
 
 // function to handle posting new items up for auction
@@ -200,4 +224,3 @@ function bidAuction() {
 }
 
 
-start(); 
