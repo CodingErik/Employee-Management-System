@@ -9,7 +9,7 @@ USE employeeDB;
 CREATE TABLE department (
     id INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
     name TEXT NOT NULL,
-)
+);
 
 -- CREATING ROLE TABLE  
 CREATE TABLE role (
@@ -17,15 +17,15 @@ CREATE TABLE role (
     title TEXT NOT NULL,
     salary DECIMAL NOT NULL,
     deparment_id INT,
-    CONSTRAINT fk_role_deptID FOREIGN KEY (department_id) REFERENCES departement(id)
-)
+    FOREIGN KEY (department_id) REFERENCES departement(id)
+);
 
 -- CREATING EMPLOYEE TABLE 
 create table employee (
     id int primary key not null auto_increment,
     name text not null,
     manager_id int,
-    CONSTRAINT fk_employee foreign key (manager_id) references employee(id)
+    foreign key (manager_id) references employee(id)
 );
 
 

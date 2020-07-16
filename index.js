@@ -1,6 +1,7 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
+const { validateEntries, validateNumbers, validateEmail } = require('./Develop/lib/validate');
 
 console.log(cTable.getTable); 
 
@@ -62,7 +63,9 @@ function start() {
         });
 }
 
-
+// This function will run if the user chooses to add something 
+// for departments roles or employees
+// then will be rerouted 
 function Add() {
     inquirer
         .prompt({
@@ -84,6 +87,9 @@ function Add() {
         });
 }
 
+// This function will run if the user chooses to view something 
+// for departments roles or employees
+// then will be rerouted 
 function View() {
     inquirer
         .prompt({
@@ -97,14 +103,17 @@ function View() {
             let key = answer.choice;
 
             switch (key) {
-                case "View departments": return console.log(`departements`);
-                case "View roles": return console.log(`roles`);
-                case "View employees": return console.log(`employees`);
+                case "View departments": return console.log(`View departements`);
+                case "View roles": return console.log(`View roles`);
+                case "View employees": return console.log(`View employees`);
                 default: return connection.end();;
             }
         });
 }
 
+// This function will run if the user chooses to update something 
+// for departments roles or employees
+// then will be rerouted
 function update() {
     console.log(`inside update function`)
     connection.query("SELECT * FROM employee", function (err, results) {
