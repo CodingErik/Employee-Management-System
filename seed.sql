@@ -32,20 +32,20 @@ CREATE TABLE employee (
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
--- Inserting sample data into "department" table --
+-- Inserting data into "department" table --
 INSERT INTO department (name) VALUES ('Finance');
 INSERT INTO department (name) VALUES ('Legal');
 INSERT INTO department (name) VALUES ('Marketing');
 INSERT INTO department (name) VALUES ('Engineering');
 
--- Inserting sample data into "role" table --
+-- Inserting data into "role" table --
 INSERT INTO role (title, salary, department_id) VALUES ('Accountant',75000,1);
 INSERT INTO role (title, salary, department_id) VALUES ('Lawyer',300000,2);
 INSERT INTO role (title, salary, department_id) VALUES ('Marketing team',150000,3);
 INSERT INTO role (title, salary, department_id) VALUES ('Software Dev',125000,4);
 
--- Inserting sample data into "employee" table --
+-- Inserting data into "employee" table --
 INSERT INTO employee (first_name, last_name, role_id) VALUES ('Ramon', 'De Luna',2);
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('Victor', 'chambor',1,1);
 INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('Amber','De Luna',4,1);
-INSERT INTO employee (first_name, last_name, role_id) VALUES ('Erik','De Luna',3);
+INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ('Erik','De Luna',3,1);

@@ -1,9 +1,8 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
-const { validateEntries, validateNumbers, validateEmail } = require('./Develop/lib/validate');
-
-console.log(cTable.getTable); 
+const { validateEntries, validateNumbers, validateEmail } = require('./Develope/validate.js');
+const {blue,red, purple, green } = require('./Develope/color.js');
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -21,22 +20,23 @@ const connection = mysql.createConnection({
 });
 
 // connect to the mysql server and sql database
+// populates our ascii art as intro
 connection.connect(function (err) {
     if (err) throw err;
-    // run the start function after the connection is made to prompt the user
     console.log(`
-* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  * 
-|                                                                  |
-|    .--.                                                          |
-|    |__| .-------.                                                |
-|    |=.| |.-----.|                                                |
-|    |--| || EMS ||                                                |
-|    |  | |'-----'|___________________________________________     |
-|    |__|~')_____(' Welcome to The Employee Management System      |
-|                                                                  |
-|         ~ made with care by -Erik De Luna-                       |
-* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *  
-`)
+    * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  * 
+    |                                                                  |
+    |    .--.                                                          |
+    |    |__| .-------.                                                |
+    |    |=.| |.-----.|                                                |
+    |    |--| || EMS ||                                                |
+    |    |  | |'-----'|___________________________________________     |
+    |    |__|~')_____(' Welcome to The Employee Management System      |
+    |                                                                  |
+    |         ~ made with care by -Erik De Luna-                       |
+    * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *  
+    `); 
+    // run the start function after the connection is made to prompt the user
     start();
 });
 
