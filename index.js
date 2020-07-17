@@ -24,27 +24,28 @@ const connection = mysql.createConnection({
 // connect to the mysql server and sql database
 // populates our ascii art as intro
 // then calls our start function 
+// goes to main 
 function start() {
     connection.connect(function (err) {
         if (err) throw err;
+        // greeting the user 
+        console.log(`
+        * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  * 
+        |                                                                  |
+        |    .--.                                                          |
+        |    |__| .-------.                                                |
+        |    |=.| |.-----.|                                                |
+        |    |--| || EMS ||                                                |
+        |    |  | |'-----'|___________________________________________     |
+        |    |__|~')_____(' Welcome to The Employee Management System      |
+        |                                                                  |
+        |         ~ made with care by -Erik De Luna-                       |
+        |                                                                  |
+        * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *  
+        `);
+        // run the start function after the connection is made to prompt the user
+        main();
     });
-    // greeting the user 
-    console.log(`
-    * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  * 
-    |                                                                  |
-    |    .--.                                                          |
-    |    |__| .-------.                                                |
-    |    |=.| |.-----.|                                                |
-    |    |--| || EMS ||                                                |
-    |    |  | |'-----'|___________________________________________     |
-    |    |__|~')_____(' Welcome to The Employee Management System      |
-    |                                                                  |
-    |         ~ made with care by -Erik De Luna-                       |
-    |                                                                  |
-    * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *  
-    `);
-    // run the start function after the connection is made to prompt the user
-    main();
 }
 
 // function start prompts and re-routes accordingly 
@@ -61,13 +62,14 @@ async function main() {
 
 
 function sendToNextPrompt(addViewUpdate) {
+    // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
-        case "Add departments": return questionAdd('departments');
-        case "Add roles": return questionAdd('roles');
-        case "Add employees": return questionAdd('employees');
-        case "View departments": return questionView('departments');
-        case "View roles": return questionView('roles');
-        case "View employees'": return questionView('employees');
+        case "Add departments": return Add(q.addDepartment);
+        case "Add roles": return Add(q.addRole);
+        case "Add employees": return Add(q.addEmployee);
+        case "View departments":  View('department'); break;
+        case "View roles":  View('role'); break;
+        case "View employees":  View('employee'); break;
         case "Update employee roles": return questionupdate();
         case "EXIT": return EXIT();
         default: return;
@@ -75,7 +77,8 @@ function sendToNextPrompt(addViewUpdate) {
 }
 
 
-// bye 
+// Tell the user bye
+// end the connection 
 function EXIT() {
     connection.end();
     console.log(`
@@ -94,57 +97,42 @@ function EXIT() {
              "Y88P"     
 
     `);
-    return; 
+    return;
 }
 
 // This function will run if the user chooses to add something 
 // for departments roles or employees
 // then will be rerouted 
-async function questionAdd(choice) {
+function Add(questions) {
 
-    // depeding on the choic
-    inquirer
-        .prompt({
-            name: "choice",
-            type: "list",
-            message: "What would you like to do?",
-            choices: ['Add departments', 'Add roles', 'Add employees']
-        })
-        .then(function (answer) {
-            //  switch(answer.choice)
-            let key = answer.choice;
-
-            switch (key) {
-                case "Add departments": return console.log(`departements`);
-                case "Add roles": return console.log(`roles`);
-                case "Add employees": return console.log(`employees`);
-                default: return connection.end();;
-            }
-        });
+    console.log(questions);
+    main();
 }
 
 // This function will run if the user chooses to view something 
 // for departments roles or employees
 // then will be rerouted 
-function View() {
-    inquirer
-        .prompt({
-            name: "choice",
-            type: "list",
-            message: "What would you like to do?",
-            choices: ['View departments', 'View roles', 'View employees']
-        })
-        .then(function (answer) {
-            //  switch(answer.choice)
-            let key = answer.choice;
+function View(table) {
+    let statement;
+    if (table === 'department' || table === 'role') {
+        statement = `SELECT * FROM ${table}`;
+    } else {
+        statement = `SELECT A.id,
+        CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
+        CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
+        title AS Role,
+        d.name AS Department
+        FROM employee AS A
+        LEFT JOIN employee AS B on A.manager_id = B.id
+        LEFT JOIN role ON role.id = A.role_id
+        LEFT JOIN department AS d ON role.id = d.id;`; 
+    }
 
-            switch (key) {
-                case "View departments": return console.log(`View departements`);
-                case "View roles": return console.log(`View roles`);
-                case "View employees": return console.log(`View employees`);
-                default: return connection.end();;
-            }
-        });
+    connection.query(statement, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
 }
 
 // This function will run if the user chooses to update something 
@@ -184,7 +172,44 @@ function update() {
 
 
 
-start(); 
+start();
 
 
-module.exports = connection; 
+module.exports = connection;
+
+
+
+// // Function to view all employees
+// function viewAllEmployees() {
+// 	connection.query(
+// 		`SELECT employee.id, employee.first_name, employee.last_name, role.title,
+// 		department.name AS department,role.salary,CONCAT(a.first_name, " ", a.last_name) AS manager
+// 		FROM employee
+// 		LEFT JOIN role ON employee.role_id = role.id
+// 		LEFT JOIN department ON role.id = department.id
+// 		LEFT JOIN employee a ON a.id = employee.manager_id;`,
+// 		function (err, res, field) {
+// 			if (err) throw err;
+// 			console.table(res);
+// 			inquirer.prompt(introQuestion).then(answerChoices);
+// 		}
+// 	);
+// }
+
+// // Function to view all departments
+// function viewAllDepartments() {
+// 	connection.query("SELECT * FROM department;", function (err, res, field) {
+// 		if (err) throw err;
+// 		console.table(res);
+// 		inquirer.prompt(introQuestion).then(answerChoices);
+// 	});
+// }
+
+// // Function to view all roles
+// function viewAllRoles() {
+// 	connection.query("SELECT * FROM role;", function (err, res, field) {
+// 		if (err) throw err;
+// 		console.table(res);
+// 		inquirer.prompt(introQuestion).then(answerChoices);
+// 	});
+// }
