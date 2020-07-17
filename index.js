@@ -197,10 +197,42 @@ function update() {
                         }
                     },
                     {
+                        name: "name",
+                        type: "input",
+                        message: "What is the new name of the role, if no change type in the same name?",
+                        validate: validateEntries
+                    },
+                    {
                         name: "salary",
                         type: "input",
                         message: "What is the new salary for the role?",
                         validate: validateNumbers
+                    },
+                    {
+                        name: "roleDept",
+                        type: "list",
+                        message: "To which department does this role belong to?",
+                        choices: async function () {
+                            var departmentChocies = [];
+                            var promiseWrapper = function () {
+                                return new Promise((resolve) => {
+                                    connection.query(`SELECT name FROM department`, function (
+                                        err,
+                                        res,
+                                        field
+                                    ) {
+                                        if (err) throw err;
+                                        console.log('inside the inqire');
+                                        // for (var i = 0; i < res.length; i++) {
+                                        departmentChocies.push(res);
+                                        // }
+                                        resolve("resolved");
+                                    });
+                                });
+                            };
+                            await promiseWrapper();
+                            return departmentChocies;
+                        },
                     },
                 ]
             )
