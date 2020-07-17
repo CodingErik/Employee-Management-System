@@ -1,7 +1,9 @@
 const { validateEntries, validateNumbers, validateEmail } = require('./validate');
 const { connection } = require('../index');
-const inquirer = require('inquirer'); 
+const inquirer = require('inquirer');
 
+
+// DONE
 // intial question with scrolling choices 
 const initialQuestion =
     [
@@ -51,17 +53,18 @@ const addRole = [
         message: "What the salary for this role?",
         validate: validateNumbers
     },
-    {
-        name: "roleDept",
-        type: "input",
-        message: "To which department does this role belong to?",
-        choices: function () {
-            connection.query("SELECT name FROM department", (err, res) => {
-                if (err) throw err.message;
-                return res;
-            });
-        }
-    },
+    // {
+    //     name: "roleDept",
+    //     type: "list",
+    //     message: "To which department does this role belong to?",
+    //     choices: function () {
+    //         connection.query("SELECT name FROM department", (err, res) => {
+    //             if (err) throw err;
+    //             return res.forEach(dept => console.log(dept.name));
+
+    //         });
+    //     }
+    // },
 ];
 
 
@@ -105,6 +108,9 @@ const addEmployee = [
 ];
 
 
+
+
+
 module.exports =
 {
     initialQuestion,
@@ -112,3 +118,25 @@ module.exports =
     addRole,
     addEmployee
 }; 
+
+
+// choices: async function () {
+//     var employeeRole = [];
+//     var promiseWrapper = function () {
+//         return new Promise((resolve) => {
+//             connection.query(`SELECT role.title FROM role`, function (
+//                 err,
+//                 res,
+//                 field
+//             ) {
+//                 if (err) throw err;
+//                 for (var i = 0; i < res.length; i++) {
+//                     employeeRole.push(`${res[i].title}`);
+//                 }
+//                 resolve("resolved");
+//             });
+//         });
+//     };
+//     await promiseWrapper();
+//     return employeeRole;
+// },

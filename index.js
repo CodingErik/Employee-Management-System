@@ -5,6 +5,7 @@ const { blue, red, purple, green } = require('./Develop/color.js');
 
 // questions
 const q = require('./Develop/questions');
+const { validateEntries } = require("./Develop/validate.js");
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -45,32 +46,40 @@ function start() {
         `);
         // run the start function after the connection is made to prompt the user
         main();
+        // Test();
     });
 }
 
 // function start prompts and re-routes accordingly 
 async function main() {
 
+    // ask the intial questions
     let a = await inquirer.prompt(q.initialQuestion);
 
+    //decide the next prompt and return it
     let questions = await sendToNextPrompt(a.choice);
 
-    let add = await inquirer.prompt(questions);
+    // // ask the new prompt
+    // let add = await inquirer.prompt(questions);
 
-    console.log(add); 
-}
+    // // this is the object with the answers to the specific prompt 
+    // console.log(add);
+};
 
 
 function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
-        case "Add departments": return q.addDepartment;
-        case "Add roles": return q.addRole;
-        case "Add employees": return q.addEmployee;
-        case "View departments":  View('department'); break;
-        case "View roles":  View('role'); break;
-        case "View employees":  View('employee'); break;
-        case "Update employee roles": return questionupdate();
+        case "Add departments":  Add(q.addDepartment); break; 
+        case "Add roles":  Add(q.addRole); break; 
+        case "Add employees":  Add(q.addEmployee); break; 
+
+        // DONE *************************
+        case "View departments": View('department'); break;
+        case "View roles": View('role'); break;
+        case "View employees": View('employee'); break;
+
+        case "Update employee roles": update(); break;
         case "EXIT": return EXIT();
         default: return;
     }
@@ -104,27 +113,29 @@ function EXIT() {
 // for departments roles or employees
 // then will be rerouted 
 function Add(questions) {
-    // inquirer.prompt(questions)
-    // .then((response) => {
-    //     let item = response.item;
-    //     let category1 = response.category;
-    //     let price = response.price;
-    //     return { item, category1, price };
-    // })
-    // .then(({ item, category1, price }) => {
-    //     con.query("insert into auctions set ? ",
-    //         {
-    //             item_name: item,
-    //             category: category1,
-    //             starting_bid: price
-    //         },
-    //         (err) => {
-    //             if (err) throw err;
-    //             console.log(`item posted!!!`);
-    //             // readAll();
-    //         });
-    // });
-    // console.log(questions);
+    console.log('inside the add function'); 
+    inquirer.prompt(questions)
+        .then((response) => {
+            // let item = response.item;
+            // let category1 = response.category;
+            // let price = response.price;
+            return console.log(response);
+        });
+        // .then((response) => {
+        //     // 
+        //     // con.query("insert into auctions set ? ",
+        //     //     {
+        //     //         item_name: item,
+        //     //         category: category1,
+        //     //         starting_bid: price
+        //     //     },
+        //     //     (err) => {
+        //     //         if (err) throw err;
+        //     //         console.log(`item posted!!!`);
+        //     //         // readAll();
+        //     //     });
+        //     console.log({ item, category1, price }); 
+        // });
     // main();
 }
 
@@ -144,7 +155,7 @@ function View(table) {
         FROM employee AS A
         LEFT JOIN employee AS B on A.manager_id = B.id
         LEFT JOIN role ON role.id = A.role_id
-        LEFT JOIN department AS d ON role.id = d.id;`; 
+        LEFT JOIN department AS d ON role.id = d.id;`;
     }
 
     connection.query(statement, (err, res) => {
@@ -158,28 +169,63 @@ function View(table) {
 // for departments roles or employees
 // then will be rerouted
 function update() {
-    console.log(`inside update function`)
-    connection.query("SELECT * FROM employee", function (err, results) {
+    // console.log(`inside update function`)
+    connection.query("SELECT * FROM role", function (err, results) {
         if (err) throw err;
+
+        // display table for user to see the employees
+        console.table(results);
+        // this is an array with objects
+        // console.log(results);
         inquirer
-            .prompt({
-                name: "choice",
-                type: "list",
-                message: "which employee would you like to update?",
-                choices: function () {
-                    return results;
-                }
-            })
+            .prompt(
+                {
+                    name: "title",
+                    type: "list",
+                    message: "Choose the role that you want to update?",
+                    choices: function () {
+                        let dept = [];
+                        results.forEach(e => dept.push(e.title));
+                        return dept;
+                    },
+                },
+                {
+                    name: "id",
+                    type: "list",
+                    message: "Choose the role that you want to update?",
+                    choices: function () {
+                        let dept = [];
+                        results.forEach(e => dept.push(e.title));
+                        return dept;
+                    },
+                },
+
+            )
             .then(function (answer) {
-                connection.query("SELECT * FROM employee", function (err, results) {
+                connection.query("UPDATE role SET ? WHERE ?",
+                    [
+                        {
+                            role: answer.title
+                        },
+                        {
+                            id: answer.id
+                        }
+                    ],
+                    function (err, results) {
 
-
-                    console.log(answer);
-                    connection.end();
-                });
+                        results.find()
+                        console.log(results);
+                        console.log(answer);
+                        connection.end();
+                    });
+            })
+            .catch(err => {
+                console.log(`the promise is not resolving that why we get that error ${err.message}`)
             });
     });
 };
+
+
 
 
 
@@ -232,3 +278,65 @@ module.exports = connection;
 // 		inquirer.prompt(introQuestion).then(answerChoices);
 // 	});
 // }
+
+
+
+
+
+// connection.query("SELECT id, first_name, last_name FROM employee", function (err, results) {
+//     if (err) throw err;
+
+//     // display table for user to see the employees
+//     console.table(results);
+//     // this is an array with objects
+//     // console.log(results);
+//     inquirer
+//         .prompt({
+//             name: "id",
+//             type: "input",
+//             message: "Enter the id number of the employee which role is changing?",
+//             validate: validateEntries
+//         })
+//         .then(function (answer) {
+//             connection.query("UPDATE employee SET ? WHERE ?",
+//             [
+//                 {
+//                     role: answer.first_name
+//                 }, 
+//                 {
+//                     id: answer.id
+//                 }
+//             ],
+//             function (err, results) {
+
+//                 results.find()
+//                 console.log(results);
+//                 console.log(answer);
+//                 connection.end();
+//             });
+//         });
+// });
+
+
+
+
+// async function () {
+//     var employeeRole = [];
+//     var promiseWrapper = function () {
+//         return new Promise((resolve) => {
+//             connection.query(`SELECT role.title FROM role`, function (
+//                 err,
+//                 res,
+//                 field
+//             ) {
+//                 if (err) throw err;
+//                 for (var i = 0; i < res.length; i++) {
+//                     employeeRole.push(`${res[i].title}`);
+//                 }
+//                 resolve("resolved");
+//             });
+//         });
+//     };
+//     await promiseWrapper();
+//     return employeeRole;
+// },
