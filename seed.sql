@@ -1,10 +1,10 @@
 -- Drops the employee_db if it exists currently --
-DROP DATABASE IF EXISTS employee_db;
+DROP DATABASE IF EXISTS employeeDB;
 -- Creates the "employee_db" database --
-CREATE DATABASE employee_db;
+CREATE DATABASE employeeDB;
 
 -- Ensures that the query that follows will use employee_db --
-USE employee_db;
+USE employeeDB;
 
 -- Creates the table "department" within employee_db --
 CREATE TABLE department (
