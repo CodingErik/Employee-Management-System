@@ -63,8 +63,9 @@ const addRole = [
 ];
 
 
-// question for employee 
-const employees = [
+// question for employee
+// gets the name, last name, role, and manager 
+const addEmployee = [
     {
         name: "newfirst_name",
         type: "input",
@@ -107,5 +108,5 @@ module.exports =
     initialQuestion,
     addDepartment,
     addRole,
-
+    addEmployee
 }; 
