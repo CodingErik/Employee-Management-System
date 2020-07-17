@@ -28,7 +28,8 @@ CREATE TABLE employee (
     last_name TEXT NOT NULL,
     role_id INTEGER,
     FOREIGN KEY (role_id) REFERENCES role(id),
-    manager_id INTEGER,
+    -- 0 IS NO MANAGER ADD THIS IN A BIT 
+    manager_id INTEGER DEFAULT 0,
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 

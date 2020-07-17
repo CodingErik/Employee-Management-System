@@ -185,3 +185,6 @@ function update() {
 
 
 start(); 
+
+
+module.exports = connection; 
