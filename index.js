@@ -53,20 +53,20 @@ async function main() {
 
     let a = await inquirer.prompt(q.initialQuestion);
 
-    let choice = await sendToNextPrompt(a.choice);
+    let questions = await sendToNextPrompt(a.choice);
 
+    let add = await inquirer.prompt(questions);
 
-
-
+    console.log(add); 
 }
 
 
 function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
-        case "Add departments": return Add(q.addDepartment);
-        case "Add roles": return Add(q.addRole);
-        case "Add employees": return Add(q.addEmployee);
+        case "Add departments": return q.addDepartment;
+        case "Add roles": return q.addRole;
+        case "Add employees": return q.addEmployee;
         case "View departments":  View('department'); break;
         case "View roles":  View('role'); break;
         case "View employees":  View('employee'); break;
@@ -104,9 +104,28 @@ function EXIT() {
 // for departments roles or employees
 // then will be rerouted 
 function Add(questions) {
-
-    console.log(questions);
-    main();
+    // inquirer.prompt(questions)
+    // .then((response) => {
+    //     let item = response.item;
+    //     let category1 = response.category;
+    //     let price = response.price;
+    //     return { item, category1, price };
+    // })
+    // .then(({ item, category1, price }) => {
+    //     con.query("insert into auctions set ? ",
+    //         {
+    //             item_name: item,
+    //             category: category1,
+    //             starting_bid: price
+    //         },
+    //         (err) => {
+    //             if (err) throw err;
+    //             console.log(`item posted!!!`);
+    //             // readAll();
+    //         });
+    // });
+    // console.log(questions);
+    // main();
 }
 
 // This function will run if the user chooses to view something 

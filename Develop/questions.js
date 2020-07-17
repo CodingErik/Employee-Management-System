@@ -1,5 +1,6 @@
 const { validateEntries, validateNumbers, validateEmail } = require('./validate');
 const { connection } = require('../index');
+const inquirer = require('inquirer'); 
 
 // intial question with scrolling choices 
 const initialQuestion =
@@ -29,9 +30,10 @@ const addDepartment = [
         name: "newDepartmentName",
         type: "input",
         message: "What is the name of the new department?",
-        validation: validateEntries
+        validate: validateEntries
     }
 ];
+
 
 // new Role questions
 // lets you input the name, salary, and department
@@ -41,13 +43,13 @@ const addRole = [
         name: "newRoleName",
         type: "input",
         message: "What is the name of the new role?",
-        validation: validateEntries
+        validate: validateEntries
     },
     {
         name: "newSalary",
         type: "input",
         message: "What the salary for this role?",
-        validation: validateNumbers
+        validate: validateNumbers
     },
     {
         name: "roleDept",
@@ -55,7 +57,7 @@ const addRole = [
         message: "To which department does this role belong to?",
         choices: function () {
             connection.query("SELECT name FROM department", (err, res) => {
-                if (err) throw err;
+                if (err) throw err.message;
                 return res;
             });
         }
@@ -70,13 +72,13 @@ const addEmployee = [
         name: "newfirst_name",
         type: "input",
         message: "What is the first name of the new employee?",
-        validation: validateEntries
+        validate: validateEntries
     },
     {
         name: "newlast_name",
         type: "input",
         message: "What is the last name of the new employee?",
-        validation: validateEntries
+        validate: validateEntries
     },
     {
         name: "roleDept",
