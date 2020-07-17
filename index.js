@@ -5,7 +5,7 @@ const { blue, red, purple, green } = require('./Develop/color.js');
 
 // questions
 const q = require('./Develop/questions');
-const { validateEntries } = require("./Develop/validate.js");
+const { validateEntries, validateNumbers } = require("./Develop/validate.js");
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -70,9 +70,9 @@ async function main() {
 function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
-        case "Add departments":  Add(q.addDepartment); break; 
-        case "Add roles":  Add(q.addRole); break; 
-        case "Add employees":  Add(q.addEmployee); break; 
+        case "Add departments": Add(q.addDepartment); break;
+        case "Add roles": Add(q.addRole); break;
+        case "Add employees": Add(q.addEmployee); break;
 
         // DONE *************************
         case "View departments": View('department'); break;
@@ -113,35 +113,41 @@ function EXIT() {
 // for departments roles or employees
 // then will be rerouted 
 function Add(questions) {
-    console.log('inside the add function'); 
+    console.log('inside the add function');
     inquirer.prompt(questions)
         .then((response) => {
+            console.log('hello')
             // let item = response.item;
             // let category1 = response.category;
             // let price = response.price;
             return console.log(response);
-        });
-        // .then((response) => {
-        //     // 
-        //     // con.query("insert into auctions set ? ",
-        //     //     {
-        //     //         item_name: item,
-        //     //         category: category1,
-        //     //         starting_bid: price
-        //     //     },
-        //     //     (err) => {
-        //     //         if (err) throw err;
-        //     //         console.log(`item posted!!!`);
-        //     //         // readAll();
-        //     //     });
-        //     console.log({ item, category1, price }); 
-        // });
+        })
+        .catch((err) => {
+            console.log('in the error')
+            return err;
+        })
+    // .then((response) => {
+    //     // 
+    //     // con.query("insert into auctions set ? ",
+    //     //     {
+    //     //         item_name: item,
+    //     //         category: category1,
+    //     //         starting_bid: price
+    //     //     },
+    //     //     (err) => {
+    //     //         if (err) throw err;
+    //     //         console.log(`item posted!!!`);
+    //     //         // readAll();
+    //     //     });
+    //     console.log({ item, category1, price }); 
+    // });
     // main();
 }
 
 // This function will run if the user chooses to view something 
 // for departments roles or employees
 // then will be rerouted 
+// DONE!!!!
 function View(table) {
     let statement;
     if (table === 'department' || table === 'role') {
@@ -179,45 +185,43 @@ function update() {
         // console.log(results);
         inquirer
             .prompt(
-                {
-                    name: "title",
-                    type: "list",
-                    message: "Choose the role that you want to update?",
-                    choices: function () {
-                        let dept = [];
-                        results.forEach(e => dept.push(e.title));
-                        return dept;
+                [
+                    {
+                        name: "role",
+                        type: "list",
+                        message: "Choose the role that you want to update?",
+                        choices: function () {
+                            let role = [];
+                            results.forEach(e => role.push(e.title));
+                            return role;
+                        }
                     },
-                },
-                {
-                    name: "id",
-                    type: "list",
-                    message: "Choose the role that you want to update?",
-                    choices: function () {
-                        let dept = [];
-                        results.forEach(e => dept.push(e.title));
-                        return dept;
+                    {
+                        name: "salary",
+                        type: "input",
+                        message: "What is the new salary for the role?",
+                        validate: validateNumbers
                     },
-                },
-
+                ]
             )
             .then(function (answer) {
-                connection.query("UPDATE role SET ? WHERE ?",
-                    [
-                        {
-                            role: answer.title
-                        },
-                        {
-                            id: answer.id
-                        }
-                    ],
-                    function (err, results) {
+                // connection.query("UPDATE role SET ? WHERE ?",
+                //     [
+                //         {
+                //             role: answer.title
+                //         },
+                //         {
+                //             id: answer.id
+                //         }
+                //     ],
+                //     function (err, results) {
 
-                        results.find()
-                        console.log(results);
-                        console.log(answer);
-                        connection.end();
-                    });
+                //         results.find()
+                //         console.log(results);
+                //         console.log(answer);
+                //         connection.end();
+                //     });
+                console.log(answer);
             })
             .catch(err => {
                 console.log(`the promise is not resolving that why we get that error ${err.message}`)

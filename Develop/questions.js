@@ -57,13 +57,27 @@ const addRole = [
     //     name: "roleDept",
     //     type: "list",
     //     message: "To which department does this role belong to?",
-    //     choices: function () {
-    //         connection.query("SELECT name FROM department", (err, res) => {
-    //             if (err) throw err;
-    //             return res.forEach(dept => console.log(dept.name));
-
-    //         });
-    //     }
+    //     choices: async function () {
+    //         var departmentChocies = [];
+    //         var promiseWrapper = function () {
+    //             return new Promise((resolve) => {
+    //                 connection.query(`SELECT name FROM department`, function (
+    //                     err,
+    //                     res,
+    //                     field
+    //                 ) {
+    //                     if (err) throw err;
+    //                     console.log('inside the inqire'); 
+    //                     // for (var i = 0; i < res.length; i++) {
+    //                         departmentChocies.push(res);
+    //                     // }
+    //                     resolve("resolved");
+    //                 });
+    //             });
+    //         };
+    //         await promiseWrapper();
+    //         return departmentChocies;
+    //     },
     // },
 ];
 
@@ -117,7 +131,7 @@ module.exports =
     addDepartment,
     addRole,
     addEmployee
-}; 
+};
 
 
 // choices: async function () {
