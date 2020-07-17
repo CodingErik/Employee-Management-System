@@ -1,8 +1,10 @@
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
-const { validateEntries, validateNumbers, validateEmail } = require('./Develope/validate.js');
-const {blue,red, purple, green } = require('./Develope/color.js');
+const { blue, red, purple, green } = require('./Develop/color.js');
+
+// questions
+const q = require('./Develop/questions');
 
 // create the connection information for the sql database
 const connection = mysql.createConnection({
@@ -21,8 +23,12 @@ const connection = mysql.createConnection({
 
 // connect to the mysql server and sql database
 // populates our ascii art as intro
-connection.connect(function (err) {
-    if (err) throw err;
+// then calls our start function 
+function start() {
+    connection.connect(function (err) {
+        if (err) throw err;
+    });
+    // greeting the user 
     console.log(`
     * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  * 
     |                                                                  |
@@ -34,39 +40,69 @@ connection.connect(function (err) {
     |    |__|~')_____(' Welcome to The Employee Management System      |
     |                                                                  |
     |         ~ made with care by -Erik De Luna-                       |
+    |                                                                  |
     * - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  *  
-    `); 
+    `);
     // run the start function after the connection is made to prompt the user
-    start();
-});
+    main();
+}
 
-// function which prompts the user for what action they should take
-function start() {
+// function start prompts and re-routes accordingly 
+async function main() {
 
-    inquirer
-        .prompt({
-            name: "choice",
-            type: "list",
-            message: "What would you like to do?",
-            choices: ["Add departments, roles, employees", "View departments, roles, employees", "Update employee roles"]
-        })
-        .then(function (answer) {
-            //  switch(answer.choice)
-            let key = answer.choice;
+    let a = await inquirer.prompt(q.initialQuestion);
 
-            switch (key) {
-                case "Add departments, roles, employees": return Add();
-                case "View departments, roles, employees": return View();
-                case "Update employee roles": return update();
-                default: return;
-            }
-        });
+    let choice = await sendToNextPrompt(a.choice);
+
+
+
+
+}
+
+
+function sendToNextPrompt(addViewUpdate) {
+    switch (addViewUpdate) {
+        case "Add departments": return questionAdd('departments');
+        case "Add roles": return questionAdd('roles');
+        case "Add employees": return questionAdd('employees');
+        case "View departments": return questionView('departments');
+        case "View roles": return questionView('roles');
+        case "View employees'": return questionView('employees');
+        case "Update employee roles": return questionupdate();
+        case "EXIT": return EXIT();
+        default: return;
+    }
+}
+
+
+// bye 
+function EXIT() {
+    connection.end();
+    console.log(`
+    
+    
+    888                      
+    888                      
+    888                      
+    88888b. 888  888 .d88b.  
+    888 "88b888  888d8P  Y8b 
+    888  888888  88888888888 
+    888 d88PY88b 888Y8b.     
+    88888P"  "Y88888 "Y8888  
+                 888         
+            Y8b d88P         
+             "Y88P"     
+
+    `);
+    return; 
 }
 
 // This function will run if the user chooses to add something 
 // for departments roles or employees
 // then will be rerouted 
-function Add() {
+async function questionAdd(choice) {
+
+    // depeding on the choic
     inquirer
         .prompt({
             name: "choice",
@@ -144,3 +180,8 @@ function update() {
 
 
 
+
+
+
+
+start(); 
