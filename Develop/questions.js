@@ -1,5 +1,5 @@
 const { validateEntries, validateNumbers, validateEmail } = require('./validate');
-const { connection } = require('../index');
+const connection = require('../index');
 const inquirer = require('inquirer');
 
 
@@ -37,49 +37,7 @@ const addDepartment = [
 ];
 
 
-// new Role questions
-// lets you input the name, salary, and department
-// of the new role
-const addRole = [
-    {
-        name: "newRoleName",
-        type: "input",
-        message: "What is the name of the new role?",
-        validate: validateEntries
-    },
-    {
-        name: "newSalary",
-        type: "input",
-        message: "What the salary for this role?",
-        validate: validateNumbers
-    },
-    // {
-    //     name: "roleDept",
-    //     type: "list",
-    //     message: "To which department does this role belong to?",
-    //     choices: async function () {
-    //         var departmentChocies = [];
-    //         var promiseWrapper = function () {
-    //             return new Promise((resolve) => {
-    //                 connection.query(`SELECT name FROM department`, function (
-    //                     err,
-    //                     res,
-    //                     field
-    //                 ) {
-    //                     if (err) throw err;
-    //                     console.log('inside the inqire'); 
-    //                     // for (var i = 0; i < res.length; i++) {
-    //                         departmentChocies.push(res);
-    //                     // }
-    //                     resolve("resolved");
-    //                 });
-    //             });
-    //         };
-    //         await promiseWrapper();
-    //         return departmentChocies;
-    //     },
-    // },
-];
+
 
 
 // question for employee
@@ -129,7 +87,7 @@ module.exports =
 {
     initialQuestion,
     addDepartment,
-    addRole,
+    // addRole,
     addEmployee
 };
 

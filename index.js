@@ -71,7 +71,7 @@ function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
         case "Add departments": Add(q.addDepartment); break;
-        case "Add roles": Add(q.addRole); break;
+        case "Add roles": Add(addRole); break;
         case "Add employees": Add(q.addEmployee); break;
 
         // DONE *************************
@@ -123,8 +123,7 @@ function Add(questions) {
             return console.log(response);
         })
         .catch((err) => {
-            console.log('in the error')
-            return err;
+            if(err) throw err; 
         })
     // .then((response) => {
     //     // 
@@ -143,6 +142,9 @@ function Add(questions) {
     // });
     // main();
 }
+
+
+
 
 // This function will run if the user chooses to view something 
 // for departments roles or employees
@@ -212,27 +214,23 @@ function update() {
                         name: "roleDept",
                         type: "list",
                         message: "To which department does this role belong to?",
-                        choices: async function () {
-                            var departmentChocies = [];
-                            var promiseWrapper = function () {
-                                return new Promise((resolve) => {
-                                    connection.query(`SELECT name FROM department`, function (
-                                        err,
-                                        res,
-                                        field
-                                    ) {
-                                        if (err) throw err;
-                                        console.log('inside the inqire');
-                                        // for (var i = 0; i < res.length; i++) {
-                                        departmentChocies.push(res);
-                                        // }
-                                        resolve("resolved");
+                        choices: async function returnME() {
+                            function tow() {
+                                return new Promise((resolve, reject) => {
+                                    let arr = [];
+                                    connection.query("Select name FROM department", (err, res) => {
+                                        if (err) reject();
+                                        for (let i = 0; i < res.length; i++) {
+                                            // pushing to the array here 
+                                            arr.push(res[i].name);
+                                        }
+                                        resolve(arr);
                                     });
-                                });
-                            };
-                            await promiseWrapper();
-                            return departmentChocies;
-                        },
+                                })
+                            }
+                            let con = await tow();
+                            return con;
+                        }
                     },
                 ]
             )
@@ -261,16 +259,45 @@ function update() {
     });
 };
 
-
-
-
-
-
-
-
-
-
-
+// new Role questions
+// lets you input the name, salary, and department
+// of the new role
+const addRole = [
+    {
+        name: "newRoleName",
+        type: "input",
+        message: "What is the name of the new role?",
+        validate: validateEntries
+    },
+    {
+        name: "newSalary",
+        type: "input",
+        message: "What the salary for this role?",
+        validate: validateNumbers
+    },
+    {
+        name: "roleDept",
+        type: "list",
+        message: "To which department does this role belong to?",
+        choices: async function returnME() {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    let arr = [];
+                    connection.query("Select name FROM department", (err, res) => {
+                        if (err) reject();
+                        for (let i = 0; i < res.length; i++) {
+                            // pushing to the array here 
+                            arr.push(res[i].name);
+                        }
+                        resolve(arr);
+                    });
+                })
+            }
+            let con = await tow();
+            return con;
+        }
+    },
+];
 
 
 start();
@@ -278,101 +305,3 @@ start();
 
 module.exports = connection;
 
-
-
-// // Function to view all employees
-// function viewAllEmployees() {
-// 	connection.query(
-// 		`SELECT employee.id, employee.first_name, employee.last_name, role.title,
-// 		department.name AS department,role.salary,CONCAT(a.first_name, " ", a.last_name) AS manager
-// 		FROM employee
-// 		LEFT JOIN role ON employee.role_id = role.id
-// 		LEFT JOIN department ON role.id = department.id
-// 		LEFT JOIN employee a ON a.id = employee.manager_id;`,
-// 		function (err, res, field) {
-// 			if (err) throw err;
-// 			console.table(res);
-// 			inquirer.prompt(introQuestion).then(answerChoices);
-// 		}
-// 	);
-// }
-
-// // Function to view all departments
-// function viewAllDepartments() {
-// 	connection.query("SELECT * FROM department;", function (err, res, field) {
-// 		if (err) throw err;
-// 		console.table(res);
-// 		inquirer.prompt(introQuestion).then(answerChoices);
-// 	});
-// }
-
-// // Function to view all roles
-// function viewAllRoles() {
-// 	connection.query("SELECT * FROM role;", function (err, res, field) {
-// 		if (err) throw err;
-// 		console.table(res);
-// 		inquirer.prompt(introQuestion).then(answerChoices);
-// 	});
-// }
-
-
-
-
-
-// connection.query("SELECT id, first_name, last_name FROM employee", function (err, results) {
-//     if (err) throw err;
-
-//     // display table for user to see the employees
-//     console.table(results);
-//     // this is an array with objects
-//     // console.log(results);
-//     inquirer
-//         .prompt({
-//             name: "id",
-//             type: "input",
-//             message: "Enter the id number of the employee which role is changing?",
-//             validate: validateEntries
-//         })
-//         .then(function (answer) {
-//             connection.query("UPDATE employee SET ? WHERE ?",
-//             [
-//                 {
-//                     role: answer.first_name
-//                 }, 
-//                 {
-//                     id: answer.id
-//                 }
-//             ],
-//             function (err, results) {
-
-//                 results.find()
-//                 console.log(results);
-//                 console.log(answer);
-//                 connection.end();
-//             });
-//         });
-// });
-
-
-
-
-// async function () {
-//     var employeeRole = [];
-//     var promiseWrapper = function () {
-//         return new Promise((resolve) => {
-//             connection.query(`SELECT role.title FROM role`, function (
-//                 err,
-//                 res,
-//                 field
-//             ) {
-//                 if (err) throw err;
-//                 for (var i = 0; i < res.length; i++) {
-//                     employeeRole.push(`${res[i].title}`);
-//                 }
-//                 resolve("resolved");
-//             });
-//         });
-//     };
-//     await promiseWrapper();
-//     return employeeRole;
-// },

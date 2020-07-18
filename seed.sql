@@ -1,3 +1,4 @@
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'Erikmysql';
 -- Drops the employee_db if it exists currently --
 DROP DATABASE IF EXISTS employeeDB;
 -- Creates the "employee_db" database --
@@ -29,7 +30,7 @@ CREATE TABLE employee (
     role_id INTEGER,
     FOREIGN KEY (role_id) REFERENCES role(id),
     -- 0 IS NO MANAGER ADD THIS IN A BIT 
-    manager_id INTEGER DEFAULT 0,
+    manager_id INTEGER,
     FOREIGN KEY (manager_id) REFERENCES employee(id)
 );
 
