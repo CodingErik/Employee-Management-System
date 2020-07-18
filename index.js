@@ -259,9 +259,8 @@ function update() {
     });
 };
 
-// new Role questions
+// new Role questions 
 // lets you input the name, salary, and department
-// of the new role
 const addRole = [
     {
         name: "newRoleName",
