@@ -54,10 +54,10 @@ function start() {
 async function main() {
 
     // ask the intial questions
-    let a = await inquirer.prompt(q.initialQuestion);
+    let a = await inquirer.prompt(initialQuestion);
 
     //decide the next prompt and return it
-    let questions = await sendToNextPrompt(a.choice);
+    await sendToNextPrompt(a.choice);
 
     // // ask the new prompt
     // let add = await inquirer.prompt(questions);
@@ -66,10 +66,13 @@ async function main() {
     // console.log(add);
 };
 
-
+// ROUTES
+// and call the correct function 
 function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
+
+        // DONE *************************
         case "Add departments": Add(addDepartment); break;
         case "Add roles": Add(addRole); break;
         case "Add employees": Add(addEmployee); break;
@@ -79,6 +82,7 @@ function sendToNextPrompt(addViewUpdate) {
         case "View roles": View('role'); break;
         case "View employees": View('employee'); break;
 
+        // DONE *************************
         case "Update employee roles": update(); break;
         case "EXIT": return EXIT();
         default: return;
@@ -86,8 +90,9 @@ function sendToNextPrompt(addViewUpdate) {
 }
 
 
+// ******************************
 // Tell the user bye
-// end the connection 
+// end the connection
 function EXIT() {
     connection.end();
     console.log(`
@@ -112,6 +117,7 @@ function EXIT() {
 // This function will run if the user chooses to add something 
 // for departments roles or employees
 // then will be rerouted 
+// ******************************
 function Add(questions) {
     console.log('inside the add function');
     inquirer.prompt(questions)
@@ -145,32 +151,7 @@ function Add(questions) {
 
 
 
-// This function will run if the user chooses to view something 
-// for departments roles or employees
-// then will be rerouted 
-// DONE!!!!
-function View(table) {
-    let statement;
-    if (table === 'department' || table === 'role') {
-        statement = `SELECT * FROM ${table}`;
-    } else {
-        statement = `SELECT A.id,
-        CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
-        CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
-        title AS Role,
-        d.name AS Department
-        FROM employee AS A
-        LEFT JOIN employee AS B on A.manager_id = B.id
-        LEFT JOIN role ON role.id = A.role_id
-        LEFT JOIN department AS d ON role.id = d.id;`;
-    }
 
-    connection.query(statement, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        main();
-    })
-}
 
 // This function will run if the user chooses to update something 
 // for departments roles or employees
@@ -212,6 +193,33 @@ function update() {
 };
 
 
+
+// QUESTIONS 
+// ************************************************************
+// ************************************************************
+
+// intial question with scrolling choices 
+// [DONE!!!]
+const initialQuestion =
+    [
+        {
+            name: "choice",
+            type: "list",
+            message: "What would you like to do?",
+            choices:
+                [
+                    "Add departments",
+                    "Add roles",
+                    "Add employees",
+                    "View departments",
+                    "View roles",
+                    "View employees",
+                    "Update employee roles",
+                    "EXIT",
+                ]
+        }
+    ];
+
 // question for adding department
 // gets the name for the new Department 
 // [DONE!!!]
@@ -247,13 +255,9 @@ const addRole = [
         choices: async function returnME() {
             function tow() {
                 return new Promise((resolve, reject) => {
-                    let arr = [];
                     connection.query("Select name FROM department", (err, res) => {
                         if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].name);
-                        }
+                        const arr = res.map(r => r.name); 
                         resolve(arr);
                     });
                 })
@@ -326,6 +330,33 @@ const addEmployee = [
     }
 ];
 
+// This function will run if the user chooses to view something 
+// for departments roles or employees
+// then will be rerouted 
+// [DONE!!!]
+function View(table) {
+    let statement;
+    if (table === 'department' || table === 'role') {
+        statement = `SELECT * FROM ${table}`;
+    } else {
+        statement = `SELECT A.id,
+        CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
+        CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
+        title AS Role,
+        d.name AS Department
+        FROM employee AS A
+        LEFT JOIN employee AS B on A.manager_id = B.id
+        LEFT JOIN role ON role.id = A.role_id
+        LEFT JOIN department AS d ON role.id = d.id;`;
+    }
+
+    connection.query(statement, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
+}
+
 // update Employee role questions
 // [DONE!!!]
 const udpateRoleQues = [
@@ -386,6 +417,10 @@ const udpateRoleQues = [
         }
     },
 ]
+
+
+// ************************************************************
+// ************************************************************
 
 
 start();

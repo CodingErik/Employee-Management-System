@@ -3,28 +3,7 @@ const connection = require('../index');
 const inquirer = require('inquirer');
 
 
-// DONE
-// intial question with scrolling choices 
-// [DONE!!!]
-const initialQuestion =
-    [
-        {
-            name: "choice",
-            type: "list",
-            message: "What would you like to do?",
-            choices:
-                [
-                    "Add departments",
-                    "Add roles",
-                    "Add employees",
-                    "View departments",
-                    "View roles",
-                    "View employees",
-                    "Update employee roles",
-                    "EXIT",
-                ]
-        }
-    ];
+
 
 
 
@@ -40,7 +19,7 @@ const initialQuestion =
 
 module.exports =
 {
-    initialQuestion,
+    // initialQuestion,
     // addDepartment,
     // addRole,
     // addEmployee
