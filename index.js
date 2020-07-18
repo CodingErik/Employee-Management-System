@@ -123,7 +123,7 @@ function Add(questions) {
             return console.log(response);
         })
         .catch((err) => {
-            if(err) throw err; 
+            if (err) throw err;
         })
     // .then((response) => {
     //     // 
@@ -186,54 +186,7 @@ function update() {
         // this is an array with objects
         // console.log(results);
         inquirer
-            .prompt(
-                [
-                    {
-                        name: "role",
-                        type: "list",
-                        message: "Choose the role that you want to update?",
-                        choices: function () {
-                            let role = [];
-                            results.forEach(e => role.push(e.title));
-                            return role;
-                        }
-                    },
-                    {
-                        name: "name",
-                        type: "input",
-                        message: "What is the new name of the role, if no change type in the same name?",
-                        validate: validateEntries
-                    },
-                    {
-                        name: "salary",
-                        type: "input",
-                        message: "What is the new salary for the role?",
-                        validate: validateNumbers
-                    },
-                    {
-                        name: "roleDept",
-                        type: "list",
-                        message: "To which department does this role belong to?",
-                        choices: async function returnME() {
-                            function tow() {
-                                return new Promise((resolve, reject) => {
-                                    let arr = [];
-                                    connection.query("Select name FROM department", (err, res) => {
-                                        if (err) reject();
-                                        for (let i = 0; i < res.length; i++) {
-                                            // pushing to the array here 
-                                            arr.push(res[i].name);
-                                        }
-                                        resolve(arr);
-                                    });
-                                })
-                            }
-                            let con = await tow();
-                            return con;
-                        }
-                    },
-                ]
-            )
+            .prompt(udpateQuestions)
             .then(function (answer) {
                 // connection.query("UPDATE role SET ? WHERE ?",
                 //     [
@@ -298,6 +251,65 @@ const addRole = [
     },
 ];
 
+
+const udpateQuestions = [
+    {
+        name: "role",
+        type: "list",
+        message: "Choose the role that you want to update?",
+        choices: async function () {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    let arr = [];
+                    connection.query("Select title FROM role", (err, res) => {
+                        if (err) reject();
+                        for (let i = 0; i < res.length; i++) {
+                            // pushing to the array here 
+                            arr.push(res[i].title);
+                        }
+                        resolve(arr);
+                    });
+                })
+            }
+            let con = await tow();
+            return con;
+        }
+    },
+    {
+        name: "name",
+        type: "input",
+        message: "What is the new name of the role, if no change type in the same name?",
+        validate: validateEntries
+    },
+    {
+        name: "salary",
+        type: "input",
+        message: "What is the new salary for the role?",
+        validate: validateNumbers
+    },
+    {
+        name: "roleDept",
+        type: "list",
+        message: "To which department does this role belong to?",
+        choices: async function returnME() {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    let arr = [];
+                    connection.query("Select name FROM department", (err, res) => {
+                        if (err) reject();
+                        for (let i = 0; i < res.length; i++) {
+                            // pushing to the array here 
+                            arr.push(res[i].name);
+                        }
+                        resolve(arr);
+                    });
+                })
+            }
+            let con = await tow();
+            return con;
+        }
+    },
+]
 
 start();
 
