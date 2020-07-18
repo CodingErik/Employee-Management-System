@@ -1,26 +1,27 @@
-const mysql = require("mysql");
+// const mysql = require("mysql");
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
+const connection = require('./sqlConnection'); 
 
 // questions
 const q = require('./Develop/questions');
 const { validateEntries, validateNumbers } = require("./Develop/validate.js");
 
 // create the connection information for the sql database
-const connection = mysql.createConnection({
-    host: "localhost",
+// const connection = mysql.createConnection({
+//     host: "localhost",
 
-    // Your port; if not 3306
-    port: 3306,
+//     // Your port; if not 3306
+//     port: 3306,
 
-    // Your username
-    user: "root",
+//     // Your username
+//     user: "root",
 
-    // Your password
-    password: "Erikmysql",
-    database: "employeeDB"
-});
+//     // Your password
+//     password: "Erikmysql",
+//     database: "employeeDB"
+// });
 
 // connect to the mysql server and sql database
 // populates our ascii art as intro
@@ -130,28 +131,7 @@ function Add(questions) {
         .catch((err) => {
             if (err) throw err;
         })
-    // .then((response) => {
-    //     // 
-    //     // con.query("insert into auctions set ? ",
-    //     //     {
-    //     //         item_name: item,
-    //     //         category: category1,
-    //     //         starting_bid: price
-    //     //     },
-    //     //     (err) => {
-    //     //         if (err) throw err;
-    //     //         console.log(`item posted!!!`);
-    //     //         // readAll();
-    //     //     });
-    //     console.log({ item, category1, price }); 
-    // });
-    // main();
 }
-
-
-
-
-
 
 // This function will run if the user chooses to update something 
 // for departments roles or employees
@@ -329,7 +309,6 @@ const addEmployee = [
         }
     }
 ];
-
 // This function will run if the user chooses to view something 
 // for departments roles or employees
 // then will be rerouted 
@@ -356,6 +335,7 @@ function View(table) {
         main();
     })
 }
+
 
 // update Employee role questions
 // [DONE!!!]
@@ -426,5 +406,5 @@ const udpateRoleQues = [
 start();
 
 
-module.exports = connection;
+// module.exports = connection;
 
