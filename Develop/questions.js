@@ -5,6 +5,7 @@ const inquirer = require('inquirer');
 
 // DONE
 // intial question with scrolling choices 
+// [DONE!!!]
 const initialQuestion =
     [
         {
@@ -25,59 +26,13 @@ const initialQuestion =
         }
     ];
 
-// question for adding department
-// gets the name for the new Department 
-const addDepartment = [
-    {
-        name: "newDepartmentName",
-        type: "input",
-        message: "What is the name of the new department?",
-        validate: validateEntries
-    }
-];
 
 
 
 
 
-// question for employee
-// gets the name, last name, role, and manager 
-const addEmployee = [
-    {
-        name: "newfirst_name",
-        type: "input",
-        message: "What is the first name of the new employee?",
-        validate: validateEntries
-    },
-    {
-        name: "newlast_name",
-        type: "input",
-        message: "What is the last name of the new employee?",
-        validate: validateEntries
-    },
-    {
-        name: "roleDept",
-        type: "input",
-        message: "What is the new employees title?",
-        choices: function () {
-            connection.query("SELECT title FROM role", (err, res) => {
-                if (err) throw err;
-                return res;
-            });
-        }
-    },
-    {
-        name: "roleDept",
-        type: "input",
-        message: "Who is the employee's manager?",
-        choices: function () {
-            connection.query("SELECT CONCAT(first_name,' ', last_name) AS manager FROM employee WHERE manager_id is null", (err, res) => {
-                if (err) throw err;
-                return res;
-            });
-        }
-    }
-];
+
+
 
 
 
@@ -86,9 +41,9 @@ const addEmployee = [
 module.exports =
 {
     initialQuestion,
-    addDepartment,
+    // addDepartment,
     // addRole,
-    addEmployee
+    // addEmployee
 };
 
 

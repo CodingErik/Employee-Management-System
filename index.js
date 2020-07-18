@@ -70,9 +70,9 @@ async function main() {
 function sendToNextPrompt(addViewUpdate) {
     // depending on the case the function will recieve a different question prompt
     switch (addViewUpdate) {
-        case "Add departments": Add(q.addDepartment); break;
+        case "Add departments": Add(addDepartment); break;
         case "Add roles": Add(addRole); break;
-        case "Add employees": Add(q.addEmployee); break;
+        case "Add employees": Add(addEmployee); break;
 
         // DONE *************************
         case "View departments": View('department'); break;
@@ -116,7 +116,6 @@ function Add(questions) {
     console.log('inside the add function');
     inquirer.prompt(questions)
         .then((response) => {
-            console.log('hello')
             // let item = response.item;
             // let category1 = response.category;
             // let price = response.price;
@@ -186,7 +185,7 @@ function update() {
         // this is an array with objects
         // console.log(results);
         inquirer
-            .prompt(udpateQuestions)
+            .prompt(udpateRoleQues)
             .then(function (answer) {
                 // connection.query("UPDATE role SET ? WHERE ?",
                 //     [
@@ -212,8 +211,22 @@ function update() {
     });
 };
 
+
+// question for adding department
+// gets the name for the new Department 
+// [DONE!!!]
+const addDepartment = [
+    {
+        name: "newDepartmentName",
+        type: "input",
+        message: "What is the name of the new department?",
+        validate: validateEntries
+    }
+];
+
 // new Role questions 
 // lets you input the name, salary, and department
+// [DONE!!!]
 const addRole = [
     {
         name: "newRoleName",
@@ -251,8 +264,71 @@ const addRole = [
     },
 ];
 
+// question for employee
+// gets the name, last name, role, and manager 
+// [DONE!!!]
+const addEmployee = [
+    {
+        name: "newfirst_name",
+        type: "input",
+        message: "What is the first name of the new employee?",
+        validate: validateEntries
+    },
+    {
+        name: "newlast_name",
+        type: "input",
+        message: "What is the last name of the new employee?",
+        validate: validateEntries
+    },
+    {
+        name: "roleDept",
+        type: "list",
+        message: "What is the new employees title?",
+        choices: async function () {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    let arr = [];
+                    connection.query("SELECT title FROM role", (err, res) => {
+                        if (err) reject();
+                        for (let i = 0; i < res.length; i++) {
+                            // pushing to the array here 
+                            arr.push(res[i].title);
+                        }
+                        resolve(arr);
+                    });
+                })
+            }
+            let con = await tow();
+            return con;
+        }
+    },
+    {
+        name: "manager_id",
+        type: "list",
+        message: "Who is the employee's manager?",
+        choices: async function () {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    let arr = ['exit'];
+                    connection.query("SELECT CONCAT(first_name,' ', last_name) AS manager FROM employee WHERE manager_id is null", (err, res) => {
+                        if (err) reject();
+                        for (let i = 0; i < res.length; i++) {
+                            // pushing to the array here 
+                            arr.push(res[i].manager);
+                        }
+                        resolve(arr);
+                    });
+                })
+            }
+            let con = await tow();
+            return con;
+        }
+    }
+];
 
-const udpateQuestions = [
+// update Employee role questions
+// [DONE!!!]
+const udpateRoleQues = [
     {
         name: "role",
         type: "list",
@@ -310,6 +386,7 @@ const udpateQuestions = [
         }
     },
 ]
+
 
 start();
 
