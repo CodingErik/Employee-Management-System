@@ -171,7 +171,7 @@ function Add(questions) {
 // then will be rerouted
 function update() {
     // console.log(`inside update function`)
-    connection.query("SELECT CONCAT(first_name, ' ', last_name) as employee, name as dept FROM employee as A LEFT JOIN role as D on A.role_id = D.id;"
+    connection.query("SELECT CONCAT(first_name, ' ', last_name) as employee, title as Roles FROM employee as A LEFT JOIN role as D on A.role_id = D.id;"
         , function (err, results) {
             if (err) throw err;
 
@@ -199,6 +199,7 @@ function update() {
                         let data = await connection.query("UPDATE employee SET ? WHERE ?", [{ role_id: newRole }, { id: employee }]);
 
                         console.log('Role Updated!!!!');
+                        console.log(`returning to the main menu........:)`);
                         main();
                     }
 
