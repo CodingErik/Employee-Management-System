@@ -1,5 +1,6 @@
 // const inquirer = require('inquirer');
-const connection = require('./index');
+const connection = require('./connection/sqlConnection');
+const util = require('util');
 
 
 // connection.query(`SELECT name FROM department`, function (
@@ -47,32 +48,42 @@ const connection = require('./index');
 
 // }
 
-async function returnME(){
+// this is our function 
+// async function returnME() {
+//   function tow() {
+//       return new Promise((resolve, reject) => {
+//           connection.query("Select CONCAT(id,' ',first_name,' ',last_name) AS name FROM employee", (err, res) => {
+//               if (err) reject();
+//               // to test what is being returned 
+//               // console.log('this is being returned by mysql',res); 
+//               const arr = res.map(r => r.name);
+//               resolve(arr);
+//           });
+//       })
+//   }
 
-function tow() {
-  return new Promise((resolve, reject) => {
-    let arr = []; 
-    connection.query("Select name FROM department", (err, res) => {
-      if (err) reject();
-      for (let i = 0; i < res.length; i++) {
-          // pushing to the array here 
-          arr.push(res[i].name);
-      }
-      resolve(arr);
-    });
-  })
+//   let con = await tow();
+//   return con;
+// }
+
+
+// CODED SOLUTION 
+async function yes() {
+  
+  connection.query = util.promisify(connection.query);
+
+  let data = await connection.query("UPDATE employee SET ? WHERE ?", [{ role_id: 3 }, { id: 1 }])
+
+  // const arr = data.map(r => r.name);
+
+  // console.log(data.map(r => r.name)); 
+
+  console.log(`updated role! 1 to 3  ${data}`); 
 }
 
-// I want this function to return array with the pushed elements 
-// tow().then(res => console.log('result', res));
+yes(); 
 
-let con = await tow(); 
 
-return con; 
-
-}; 
-
-// returnME(); 
 
 // async function () {
 //     var employeeRole = [];

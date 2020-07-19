@@ -5,6 +5,9 @@ const { promisify } = require('util');
 const { connect } = require('../connection/sqlConnection');
 const { promises } = require('fs');
 
+// FOR PROMISIFY 
+const util = require('util');
+
 // QUESTIONS 
 // ************************************************************
 // ************************************************************
@@ -151,21 +154,21 @@ const udpateRoleQuestion = [
         name: "employee",
         type: "list",
         message: "choose an employee to update role?",
-        choices: async function returnME() {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    connection.query("Select CONCAT(id,' ',first_name,' ',last_name) AS name FROM employee", (err, res) => {
-                        if (err) reject();
-                        // to test what is being returned 
-                        // console.log('this is being returned by mysql',res); 
-                        const arr = res.map(r => r.name);
-                        resolve(arr);
-                    });
-                })
-            }
+        choices: async function yes() {
+            try {
+                // promisify our connection.query function 
+                connection.query = util.promisify(connection.query);
+                // wait for our data to come back from the database 
+                let data = await connection.query("Select CONCAT(id,' ',first_name,' ',last_name) AS name FROM employee")
+                // testing our output 
+                // console.log(data.map(r => r.name)); 
+                // return the data to our choices 
+                return data.map(r => r.name);
 
-            let con = await tow();
-            return con;
+                // catch any errors and console.log them here along with this message  
+            } catch (error) {
+                console.log(error, 'this is our error in the catch of the udpate');
+            }
         }
     },
     {
@@ -173,21 +176,15 @@ const udpateRoleQuestion = [
         type: "list",
         message: "please choose new role",
         choices: async function () {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = [];
-                    connection.query("Select CONCAT(id,' ',title) AS title FROM role", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].title);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
+            // connection.query is originaly a callback based http request 
+            // so in order to clean it up we use this 
+            connection.query = util.promisify(connection.query);
+
+            // wait for the data to come back 
+            let data = await connection.query("Select CONCAT(id,' ',title) AS title FROM role");
+            
+            // console.log(data); 
+            return data.map( r => r.title);
         }
     }
 ];

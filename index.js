@@ -4,6 +4,7 @@ const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
 const connection = require('./connection/sqlConnection');
 const QueryKey = require('./connection/queryFunctions');
+const util = require('util');
 
 // questions
 const q = require('./Develop/questions');
@@ -143,6 +144,9 @@ function Add(questions) {
             }
 
 
+            // if a department id is added we need to match that id to the deparment 
+
+
             connection.query(query, value, (err) => {
                 if (err) throw err;
                 console.log(`The new department has been added!!!`);
@@ -162,41 +166,44 @@ function Add(questions) {
 // then will be rerouted
 function update() {
     // console.log(`inside update function`)
-    connection.query("SELECT * FROM employee", function (err, results) {
-        if (err) throw err;
+    connection.query("SELECT CONCAT(first_name, ' ', last_name) as employee, name as dept FROM employee as A LEFT JOIN role as D on A.role_id = D.id;"
+        , function (err, results) {
+            if (err) throw err;
 
-        // display table for user to see the employees
-        console.table(results);
-        // this is an array with objects
-        // console.log(results);
-        inquirer
-            .prompt(q.udpateRoleQuestion)
-            .then(function (answer) {
+            // display table for user to see the employees
+            console.table(results);
+            // this is an array with objects
+            // console.log(results);
+            inquirer
+                .prompt(q.udpateRoleQuestion)
+                .then(function (answer) {
 
-                /// choose employee 
-                // choose new role 
-                // match role chose to an id 
+                    /// choose employee 
+                    let employee = answer.employee.charAt(0);
+                    // choose new role 
+                    let newRole = answer.role.charAt(0);
 
-                // take the id from the role chosen and set that as the users new role_id 
+                    // testing output
+                    // console.log(employee, 'this is the emoployee')    
+                    // console.log(newRole, 'this is the newRole')
 
+                    async function updateRoleId() {
 
-                // connection.query("UPDATE employee SET ? WHERE ?", 
-                // [{ role: answer.title }, { id: answer.id }], (err, results) => {
+                        connection.query = util.promisify(connection.query);
 
-                //     results.find()
-                //     console.log(results);
-                //     console.log(answer);
-                //     connection.end();
+                        let data = await connection.query("UPDATE employee SET ? WHERE ?", [{ role_id: newRole }, { id: employee }]);
 
-                // });
+                        console.log('Role Updated!!!!');
+                        main();
+                    }
 
-                console.log(answer);
-                
-            })
-            .catch(err => {
-                console.log(`the promise is not resolving that why we get that error ${err.message}`)
-            });
-    });
+                    updateRoleId();
+
+                })
+                .catch(err => {
+                    console.log(`the promise is not resolving that why we get that error ${err.message}`)
+                });
+        });
 };
 
 // This function will run if the user chooses to view something 
@@ -205,9 +212,12 @@ function update() {
 // [DONE!!!]
 function View(table) {
     let statement;
-    if (table === 'department' || table === 'role') {
-        statement = `SELECT * FROM ${table}`;
-    } else {
+    if (table === 'department') {
+        statement = `SELECT id, name as Deparment FROM ${table}`;
+    } else if (table === 'role') {
+        statement = `SELECT id, title as Roles, salary, department_id FROM ${table}`;
+    }
+    else {
         statement = `SELECT A.id,
         CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
         CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
