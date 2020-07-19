@@ -148,7 +148,7 @@ function Add(questions) {
                 console.log(`The new department has been added!!!`);
                 // console.log(`returning to the main menu........:)`);
                 // setTimeout(() => main(), 2000);
-                main(); 
+                main();
             });
 
         })
@@ -162,7 +162,7 @@ function Add(questions) {
 // then will be rerouted
 function update() {
     // console.log(`inside update function`)
-    connection.query("SELECT * FROM role", function (err, results) {
+    connection.query("SELECT * FROM employee", function (err, results) {
         if (err) throw err;
 
         // display table for user to see the employees
@@ -172,23 +172,26 @@ function update() {
         inquirer
             .prompt(q.udpateRoleQuestion)
             .then(function (answer) {
-                connection.query("UPDATE role SET ? WHERE ?",
-                    [
-                        {
-                            role: answer.title
-                        },
-                        {
-                            id: answer.id
-                        }
-                    ],
-                    function (err, results) {
 
-                        results.find()
-                        console.log(results);
-                        console.log(answer);
-                        connection.end();
-                    });
+                /// choose employee 
+                // choose new role 
+                // match role chose to an id 
+
+                // take the id from the role chosen and set that as the users new role_id 
+
+
+                // connection.query("UPDATE employee SET ? WHERE ?", 
+                // [{ role: answer.title }, { id: answer.id }], (err, results) => {
+
+                //     results.find()
+                //     console.log(results);
+                //     console.log(answer);
+                //     connection.end();
+
+                // });
+
                 console.log(answer);
+                
             })
             .catch(err => {
                 console.log(`the promise is not resolving that why we get that error ${err.message}`)

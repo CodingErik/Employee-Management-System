@@ -95,3 +95,39 @@ return con;
 //     return employeeRole;
 // },
 
+
+
+// {
+//   name: "name",
+//   type: "input",
+//   message: "What is the new name of the role, if no change type in the same name?",
+//   validate: validateEntries
+// },
+// {
+//   name: "salary",
+//   type: "input",
+//   message: "What is the new salary for the role?",
+//   validate: validateNumbers
+// },
+// {
+//   name: "roleDept",
+//   type: "list",
+//   message: "To which department does this role belong to?",
+//   choices: async function returnME() {
+//       function tow() {
+//           return new Promise((resolve, reject) => {
+//               let arr = [];
+//               connection.query("Select name FROM department", (err, res) => {
+//                   if (err) reject();
+//                   for (let i = 0; i < res.length; i++) {
+//                       // pushing to the array here 
+//                       arr.push(res[i].name);
+//                   }
+//                   resolve(arr);
+//               });
+//           })
+//       }
+//       let con = await tow();
+//       return con;
+//   }
+// },

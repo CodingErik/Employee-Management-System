@@ -1,6 +1,9 @@
 const { validateEntries, validateNumbers, validateEmail } = require('./validate');
 const connection = require('../connection/sqlConnection');
 const inquirer = require('inquirer');
+const { promisify } = require('util');
+const { connect } = require('../connection/sqlConnection');
+const { promises } = require('fs');
 
 // QUESTIONS 
 // ************************************************************
@@ -66,7 +69,7 @@ const addRole = [
                 return new Promise((resolve, reject) => {
                     connection.query("Select name FROM department", (err, res) => {
                         if (err) reject();
-                        const arr = res.map(r => r.name); 
+                        const arr = res.map(r => r.name);
                         resolve(arr);
                     });
                 })
@@ -101,9 +104,9 @@ const addEmployee = [
         choices: async function () {
             function tow() {
                 return new Promise((resolve, reject) => {
-                    let arr = [];
                     connection.query("SELECT title FROM role", (err, res) => {
                         if (err) reject();
+                        let arr = [];
                         for (let i = 0; i < res.length; i++) {
                             // pushing to the array here 
                             arr.push(res[i].title);
@@ -145,14 +148,35 @@ const addEmployee = [
 // [DONE!!!]
 const udpateRoleQuestion = [
     {
+        name: "employee",
+        type: "list",
+        message: "choose an employee to update role?",
+        choices: async function returnME() {
+            function tow() {
+                return new Promise((resolve, reject) => {
+                    connection.query("Select CONCAT(id,' ',first_name,' ',last_name) AS name FROM employee", (err, res) => {
+                        if (err) reject();
+                        // to test what is being returned 
+                        // console.log('this is being returned by mysql',res); 
+                        const arr = res.map(r => r.name);
+                        resolve(arr);
+                    });
+                })
+            }
+
+            let con = await tow();
+            return con;
+        }
+    },
+    {
         name: "role",
         type: "list",
-        message: "Choose the role that you want to update?",
+        message: "please choose new role",
         choices: async function () {
             function tow() {
                 return new Promise((resolve, reject) => {
                     let arr = [];
-                    connection.query("Select title FROM role", (err, res) => {
+                    connection.query("Select CONCAT(id,' ',title) AS title FROM role", (err, res) => {
                         if (err) reject();
                         for (let i = 0; i < res.length; i++) {
                             // pushing to the array here 
@@ -165,41 +189,7 @@ const udpateRoleQuestion = [
             let con = await tow();
             return con;
         }
-    },
-    {
-        name: "name",
-        type: "input",
-        message: "What is the new name of the role, if no change type in the same name?",
-        validate: validateEntries
-    },
-    {
-        name: "salary",
-        type: "input",
-        message: "What is the new salary for the role?",
-        validate: validateNumbers
-    },
-    {
-        name: "roleDept",
-        type: "list",
-        message: "To which department does this role belong to?",
-        choices: async function returnME() {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = [];
-                    connection.query("Select name FROM department", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].name);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    },
+    }
 ];
 
 // ************************************************************
@@ -207,7 +197,7 @@ const udpateRoleQuestion = [
 
 // export *  as from '../index';
 
-module.exports = 
+module.exports =
 {
     initialQuestion,
     addDepartment,
