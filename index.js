@@ -3,6 +3,7 @@ const inquirer = require("inquirer");
 const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
 const connection = require('./connection/sqlConnection'); 
+const QueryKey = require('./connection/queryFunctions'); 
 
 // questions
 const q = require('./Develop/questions');
@@ -43,7 +44,7 @@ async function main() {
     let a = await inquirer.prompt(q.initialQuestion);
 
     //decide the next prompt and return it
-    await sendToNextPrompt(a.choice);
+    sendToNextPrompt(a.choice);
 
     // // ask the new prompt
     // let add = await inquirer.prompt(questions);
@@ -60,11 +61,11 @@ function sendToNextPrompt(addViewUpdate) {
 
         // DONE *************************
         case "Add departments": Add(q.addDepartment); break;
-        case "Add roles": Add(addRole); break;
-        case "Add employees": Add(addEmployee); break;
+        case "Add roles": Add(q.addRole); break;
+        case "Add employees": Add(q.addEmployee); break;
 
         // DONE *************************
-        case "View departments": View('department'); break;
+        case "View departments": View('department'); break;  
         case "View roles": View('role'); break;
         case "View employees": View('employee'); break;
 
@@ -131,7 +132,7 @@ function update() {
         // this is an array with objects
         // console.log(results);
         inquirer
-            .prompt(udpateRoleQues)
+            .prompt(q.udpateRoleQuestion)
             .then(function (answer) {
                 // connection.query("UPDATE role SET ? WHERE ?",
                 //     [
@@ -157,122 +158,16 @@ function update() {
     });
 };
 
-
-// QUESTIONS 
-// ************************************************************
-// ************************************************************
-
-
-
-
-
-// new Role questions 
-// lets you input the name, salary, and department
-// [DONE!!!]
-const addRole = [
-    {
-        name: "newRoleName",
-        type: "input",
-        message: "What is the name of the new role?",
-        validate: validateEntries
-    },
-    {
-        name: "newSalary",
-        type: "input",
-        message: "What the salary for this role?",
-        validate: validateNumbers
-    },
-    {
-        name: "roleDept",
-        type: "list",
-        message: "To which department does this role belong to?",
-        choices: async function returnME() {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    connection.query("Select name FROM department", (err, res) => {
-                        if (err) reject();
-                        const arr = res.map(r => r.name); 
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    },
-];
-
-// question for employee
-// gets the name, last name, role, and manager 
-// [DONE!!!]
-const addEmployee = [
-    {
-        name: "newfirst_name",
-        type: "input",
-        message: "What is the first name of the new employee?",
-        validate: validateEntries
-    },
-    {
-        name: "newlast_name",
-        type: "input",
-        message: "What is the last name of the new employee?",
-        validate: validateEntries
-    },
-    {
-        name: "roleDept",
-        type: "list",
-        message: "What is the new employees title?",
-        choices: async function () {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = [];
-                    connection.query("SELECT title FROM role", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].title);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    },
-    {
-        name: "manager_id",
-        type: "list",
-        message: "Who is the employee's manager?",
-        choices: async function () {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = ['exit'];
-                    connection.query("SELECT CONCAT(first_name,' ', last_name) AS manager FROM employee WHERE manager_id is null", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].manager);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    }
-];
 // This function will run if the user chooses to view something 
-// for departments roles or employees
-// then will be rerouted 
-// [DONE!!!]
-function View(table) {
-    let statement;
-    if (table === 'department' || table === 'role') {
-        statement = `SELECT * FROM ${table}`;
-    } else {
-        statement = `SELECT A.id,
+    // for departments roles or employees
+    // then will be rerouted 
+    // [DONE!!!]
+    function View(table) {
+        let statement;
+        if (table === 'department' || table === 'role') {
+            statement = `SELECT * FROM ${table}`;
+        } else {
+            statement = `SELECT A.id,
         CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
         CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
         title AS Role,
@@ -281,77 +176,14 @@ function View(table) {
         LEFT JOIN employee AS B on A.manager_id = B.id
         LEFT JOIN role ON role.id = A.role_id
         LEFT JOIN department AS d ON role.id = d.id;`;
+        }
+
+        connection.query(statement, (err, res) => {
+            if (err) throw err;
+            console.table(res);
+            main(); 
+        })
     }
-
-    connection.query(statement, (err, res) => {
-        if (err) throw err;
-        console.table(res);
-        main();
-    })
-}
-
-
-// update Employee role questions
-// [DONE!!!]
-const udpateRoleQues = [
-    {
-        name: "role",
-        type: "list",
-        message: "Choose the role that you want to update?",
-        choices: async function () {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = [];
-                    connection.query("Select title FROM role", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].title);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    },
-    {
-        name: "name",
-        type: "input",
-        message: "What is the new name of the role, if no change type in the same name?",
-        validate: validateEntries
-    },
-    {
-        name: "salary",
-        type: "input",
-        message: "What is the new salary for the role?",
-        validate: validateNumbers
-    },
-    {
-        name: "roleDept",
-        type: "list",
-        message: "To which department does this role belong to?",
-        choices: async function returnME() {
-            function tow() {
-                return new Promise((resolve, reject) => {
-                    let arr = [];
-                    connection.query("Select name FROM department", (err, res) => {
-                        if (err) reject();
-                        for (let i = 0; i < res.length; i++) {
-                            // pushing to the array here 
-                            arr.push(res[i].name);
-                        }
-                        resolve(arr);
-                    });
-                })
-            }
-            let con = await tow();
-            return con;
-        }
-    },
-]
-
 
 // ************************************************************
 // ************************************************************
@@ -360,5 +192,5 @@ const udpateRoleQues = [
 start();
 
 
-// module.exports = connection;
+module.exports = {main};
 
