@@ -115,14 +115,16 @@ function Add(questions) {
             // let category1 = response.category;
             // let price = response.price;
             // testing
-            console.log(r);
+            // console.log(r);
             let value;
             let query;
+            let msg; 
 
             // add department
             if (r.newDepartmentName) {
                 value = [r.newDepartmentName];
                 query = "INSERT INTO department (name) VALUES (?);";
+                msg = `The new department has been added!!!;`; 
             // add role
             } else if (r.newRoleName) {
                 value =
@@ -133,6 +135,7 @@ function Add(questions) {
                 };
                 // console.log(value);
                 query = "INSERT INTO role set ?;";
+                msg = `The new role has been added!!!;`; 
 
             // add employee
             } else if (r.newfirst_name) {
@@ -144,18 +147,17 @@ function Add(questions) {
                 };
                 // console.log(value);
                 query = "INSERT INTO employee set ?;";
+                msg = `The new employee has been added!!!;`; 
             }
-
 
             // if a department id is added we need to match that id to the deparment 
 
-
             connection.query(query, value, (err) => {
                 if (err) throw err;
-                console.log(`The new department has been added!!!`);
-                // console.log(`returning to the main menu........:)`);
-                // setTimeout(() => main(), 2000);
-                main();
+                console.log(msg);
+                console.log(`returning to the main menu........:)`);
+                setTimeout(() => main(), 2000);
+                // main();
             });
 
         })
