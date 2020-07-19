@@ -124,19 +124,19 @@ function Add(questions) {
                 value = [r.newDepartmentName];
                 query = "INSERT INTO department (name) VALUES (?);";
             } else if (r.newRoleName) {
-                value = 
-                    {
-                        title: r.newRoleName,
-                        salary: r.newSalary,
-                        department_id: 1 // r.roleDept call this in to match id 
-                    };
+                value =
+                {
+                    title: r.newRoleName,
+                    salary: r.newSalary,
+                    department_id: 1 // r.roleDept call this in to match id 
+                };
                 console.log(value);
                 query = "INSERT INTO role set ?;";
-            } else if(r.newfirst_name){
+            } else if (r.newfirst_name) {
                 value = {
-                    first_name:r.newfirst_name,
-                    last_name:r.newlast_name,
-                    role_id:  1, // r.roleDept call this in to match id 
+                    first_name: r.newfirst_name,
+                    last_name: r.newlast_name,
+                    role_id: 1, // r.roleDept call this in to match id 
                     manager_id: 1 //  r.manager_id call this in to match id 
                 };
                 console.log(value);
