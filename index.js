@@ -2,8 +2,8 @@
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
-const connection = require('./connection/sqlConnection'); 
-const QueryKey = require('./connection/queryFunctions'); 
+const connection = require('./connection/sqlConnection');
+const QueryKey = require('./connection/queryFunctions');
 
 // questions
 const q = require('./Develop/questions');
@@ -65,7 +65,7 @@ function sendToNextPrompt(addViewUpdate) {
         case "Add employees": Add(q.addEmployee); break;
 
         // DONE *************************
-        case "View departments": View('department'); break;  
+        case "View departments": View('department'); break;
         case "View roles": View('role'); break;
         case "View employees": View('employee'); break;
 
@@ -106,13 +106,49 @@ function EXIT() {
 // then will be rerouted 
 // ******************************
 function Add(questions) {
-    console.log('inside the add function');
+    // testing function 
+    // console.log('inside the add function');
     inquirer.prompt(questions)
-        .then((response) => {
+        .then((r) => {
             // let item = response.item;
             // let category1 = response.category;
             // let price = response.price;
-            return console.log(response);
+            // testing
+            console.log(r);
+            let value;
+            let query;
+
+
+
+            if (r.newDepartmentName) {
+                value = [r.newDepartmentName];
+                query = "INSERT INTO department (name) VALUES (?);";
+            } else if (r.newRoleName) {
+                value = 
+                    {
+                        title: r.newRoleName,
+                        salary: r.newSalary,
+                        department_id: 1 // r.roleDept call this in to match id 
+                    };
+                console.log(value);
+                query = "INSERT INTO role set ?;";
+            } else if(r.newfirst_name){
+                value = {
+                    first_name:r.newfirst_name,
+                    last_name:r.newlast_name,
+                    role_id:  1, // r.roleDept call this in to match id 
+                    manager_id: 1 //  r.manager_id call this in to match id 
+                };
+                console.log(value);
+                query = "INSERT INTO employee set ?;";
+            }
+
+
+            connection.query(query, value, (err) => {
+                if (err) throw err;
+                console.log(`The new department has been added!!!`);
+            });
+
         })
         .catch((err) => {
             if (err) throw err;
@@ -159,15 +195,15 @@ function update() {
 };
 
 // This function will run if the user chooses to view something 
-    // for departments roles or employees
-    // then will be rerouted 
-    // [DONE!!!]
-    function View(table) {
-        let statement;
-        if (table === 'department' || table === 'role') {
-            statement = `SELECT * FROM ${table}`;
-        } else {
-            statement = `SELECT A.id,
+// for departments roles or employees
+// then will be rerouted 
+// [DONE!!!]
+function View(table) {
+    let statement;
+    if (table === 'department' || table === 'role') {
+        statement = `SELECT * FROM ${table}`;
+    } else {
+        statement = `SELECT A.id,
         CONCAT(A.first_name,' ',A.last_name) AS 'Employee',
         CONCAT(B.first_name,' ',B.last_name) AS 'Manager',
         title AS Role,
@@ -176,14 +212,14 @@ function update() {
         LEFT JOIN employee AS B on A.manager_id = B.id
         LEFT JOIN role ON role.id = A.role_id
         LEFT JOIN department AS d ON role.id = d.id;`;
-        }
-
-        connection.query(statement, (err, res) => {
-            if (err) throw err;
-            console.table(res);
-            main(); 
-        })
     }
+
+    connection.query(statement, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+        main();
+    })
+}
 
 // ************************************************************
 // ************************************************************
@@ -192,5 +228,5 @@ function update() {
 start();
 
 
-module.exports = {main};
+module.exports = { main };
 

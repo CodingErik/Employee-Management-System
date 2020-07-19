@@ -2,8 +2,6 @@ const { validateEntries, validateNumbers, validateEmail } = require('./validate'
 const connection = require('../connection/sqlConnection');
 const inquirer = require('inquirer');
 
-
-
 // QUESTIONS 
 // ************************************************************
 // ************************************************************
