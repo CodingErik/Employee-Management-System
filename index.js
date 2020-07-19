@@ -118,8 +118,6 @@ function Add(questions) {
             let value;
             let query;
 
-
-
             if (r.newDepartmentName) {
                 value = [r.newDepartmentName];
                 query = "INSERT INTO department (name) VALUES (?);";
@@ -130,8 +128,9 @@ function Add(questions) {
                     salary: r.newSalary,
                     department_id: 1 // r.roleDept call this in to match id 
                 };
-                console.log(value);
+                // console.log(value);
                 query = "INSERT INTO role set ?;";
+
             } else if (r.newfirst_name) {
                 value = {
                     first_name: r.newfirst_name,
@@ -139,7 +138,7 @@ function Add(questions) {
                     role_id: 1, // r.roleDept call this in to match id 
                     manager_id: 1 //  r.manager_id call this in to match id 
                 };
-                console.log(value);
+                // console.log(value);
                 query = "INSERT INTO employee set ?;";
             }
 
@@ -147,6 +146,9 @@ function Add(questions) {
             connection.query(query, value, (err) => {
                 if (err) throw err;
                 console.log(`The new department has been added!!!`);
+                // console.log(`returning to the main menu........:)`);
+                // setTimeout(() => main(), 2000);
+                main(); 
             });
 
         })
@@ -170,22 +172,22 @@ function update() {
         inquirer
             .prompt(q.udpateRoleQuestion)
             .then(function (answer) {
-                // connection.query("UPDATE role SET ? WHERE ?",
-                //     [
-                //         {
-                //             role: answer.title
-                //         },
-                //         {
-                //             id: answer.id
-                //         }
-                //     ],
-                //     function (err, results) {
+                connection.query("UPDATE role SET ? WHERE ?",
+                    [
+                        {
+                            role: answer.title
+                        },
+                        {
+                            id: answer.id
+                        }
+                    ],
+                    function (err, results) {
 
-                //         results.find()
-                //         console.log(results);
-                //         console.log(answer);
-                //         connection.end();
-                //     });
+                        results.find()
+                        console.log(results);
+                        console.log(answer);
+                        connection.end();
+                    });
                 console.log(answer);
             })
             .catch(err => {
