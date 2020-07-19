@@ -8,7 +8,6 @@ const util = require('util');
 
 // questions
 const q = require('./Develop/questions');
-const { validateEntries, validateNumbers } = require("./Develop/validate.js");
 
 // connect to the mysql server and sql database
 // populates our ascii art as intro

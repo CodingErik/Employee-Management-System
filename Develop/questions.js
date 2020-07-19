@@ -1,4 +1,4 @@
-const { validateEntries, validateNumbers, validateEmail } = require('./validate');
+const { validateEntries, validateNumbers } = require('./validate');
 const connection = require('../connection/sqlConnection');
 const inquirer = require('inquirer');
 const { promisify } = require('util');
