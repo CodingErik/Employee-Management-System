@@ -2,26 +2,11 @@
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
-const connection = require('./sqlConnection'); 
+const connection = require('./connection/sqlConnection'); 
 
 // questions
 const q = require('./Develop/questions');
 const { validateEntries, validateNumbers } = require("./Develop/validate.js");
-
-// create the connection information for the sql database
-// const connection = mysql.createConnection({
-//     host: "localhost",
-
-//     // Your port; if not 3306
-//     port: 3306,
-
-//     // Your username
-//     user: "root",
-
-//     // Your password
-//     password: "Erikmysql",
-//     database: "employeeDB"
-// });
 
 // connect to the mysql server and sql database
 // populates our ascii art as intro
@@ -55,7 +40,7 @@ function start() {
 async function main() {
 
     // ask the intial questions
-    let a = await inquirer.prompt(initialQuestion);
+    let a = await inquirer.prompt(q.initialQuestion);
 
     //decide the next prompt and return it
     await sendToNextPrompt(a.choice);
@@ -74,7 +59,7 @@ function sendToNextPrompt(addViewUpdate) {
     switch (addViewUpdate) {
 
         // DONE *************************
-        case "Add departments": Add(addDepartment); break;
+        case "Add departments": Add(q.addDepartment); break;
         case "Add roles": Add(addRole); break;
         case "Add employees": Add(addEmployee); break;
 
@@ -173,44 +158,13 @@ function update() {
 };
 
 
-
 // QUESTIONS 
 // ************************************************************
 // ************************************************************
 
-// intial question with scrolling choices 
-// [DONE!!!]
-const initialQuestion =
-    [
-        {
-            name: "choice",
-            type: "list",
-            message: "What would you like to do?",
-            choices:
-                [
-                    "Add departments",
-                    "Add roles",
-                    "Add employees",
-                    "View departments",
-                    "View roles",
-                    "View employees",
-                    "Update employee roles",
-                    "EXIT",
-                ]
-        }
-    ];
 
-// question for adding department
-// gets the name for the new Department 
-// [DONE!!!]
-const addDepartment = [
-    {
-        name: "newDepartmentName",
-        type: "input",
-        message: "What is the name of the new department?",
-        validate: validateEntries
-    }
-];
+
+
 
 // new Role questions 
 // lets you input the name, salary, and department

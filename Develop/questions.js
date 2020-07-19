@@ -1,48 +1,47 @@
 const { validateEntries, validateNumbers, validateEmail } = require('./validate');
-const connection = require('../index');
+const connection = require('../connection/sqlConnection');
 const inquirer = require('inquirer');
 
 
+// intial question with scrolling choices 
+// [DONE!!!]
+const initialQuestion =
+    [
+        {
+            name: "choice",
+            type: "list",
+            message: "What would you like to do?",
+            choices:
+                [
+                    "Add departments",
+                    "Add roles",
+                    "Add employees",
+                    "View departments",
+                    "View roles",
+                    "View employees",
+                    "Update employee roles",
+                    "EXIT",
+                ]
+        }
+    ];
+
+// question for adding department
+// gets the name for the new Department 
+// [DONE!!!]
+const addDepartment = [
+    {
+        name: "newDepartmentName",
+        type: "input",
+        message: "What is the name of the new department?",
+        validate: validateEntries
+    }
+];
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-module.exports =
+module.exports = 
 {
-    // initialQuestion,
-    // addDepartment,
-    // addRole,
-    // addEmployee
+    initialQuestion,
+    addDepartment
 };
-
-
-// choices: async function () {
-//     var employeeRole = [];
-//     var promiseWrapper = function () {
-//         return new Promise((resolve) => {
-//             connection.query(`SELECT role.title FROM role`, function (
-//                 err,
-//                 res,
-//                 field
-//             ) {
-//                 if (err) throw err;
-//                 for (var i = 0; i < res.length; i++) {
-//                     employeeRole.push(`${res[i].title}`);
-//                 }
-//                 resolve("resolved");
-//             });
-//         });
-//     };
-//     await promiseWrapper();
-//     return employeeRole;
-// },
