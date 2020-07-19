@@ -70,9 +70,9 @@ const addRole = [
         choices: async function returnME() {
             function tow() {
                 return new Promise((resolve, reject) => {
-                    connection.query("Select name FROM department", (err, res) => {
+                    connection.query("Select CONCAT(id,' ',name) as department FROM department", (err, res) => {
                         if (err) reject();
-                        const arr = res.map(r => r.name);
+                        const arr = res.map(r => r.department);
                         resolve(arr);
                     });
                 })
@@ -107,7 +107,7 @@ const addEmployee = [
         choices: async function () {
             function tow() {
                 return new Promise((resolve, reject) => {
-                    connection.query("SELECT title FROM role", (err, res) => {
+                    connection.query("SELECT CONCAT(id,' ',title) AS title FROM role", (err, res) => {
                         if (err) reject();
                         let arr = [];
                         for (let i = 0; i < res.length; i++) {
@@ -130,7 +130,7 @@ const addEmployee = [
             function tow() {
                 return new Promise((resolve, reject) => {
                     let arr = ['exit'];
-                    connection.query("SELECT CONCAT(first_name,' ', last_name) AS manager FROM employee WHERE manager_id is null", (err, res) => {
+                    connection.query("SELECT CONCAT(id,' ',first_name,' ', last_name) AS manager FROM employee WHERE manager_id is null", (err, res) => {
                         if (err) reject();
                         for (let i = 0; i < res.length; i++) {
                             // pushing to the array here 
