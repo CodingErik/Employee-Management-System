@@ -1,8 +1,8 @@
 const { validateEntries, validateNumbers } = require('./validate');
-const connection = require('../connection/sqlConnection');
+const connection = require('../model/sqlConnection');
 const inquirer = require('inquirer');
 const { promisify } = require('util');
-const { connect } = require('../connection/sqlConnection');
+const { connect } = require('../model/sqlConnection');
 const { promises } = require('fs');
 
 // FOR PROMISIFY 
