@@ -4,11 +4,11 @@
 ![GitHub Followers](https://img.shields.io/github/followers/codingErik?color=orange&label=Followers&logo=GitHub)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Tweet](https://img.shields.io/twitter/url?url=https%3A%2F%2Fgithub.com%2FCodingErik%2FteamGenerator)
-[![HitCount](http://hits.dwyl.com/{CodingErik}/{Employee-Management-System}.svg)](http://hits.dwyl.com/{username}/{project-name})
 ![npm](https://img.shields.io/npm/v/mysql?color=blue&label=mysql&logo=NPM&logoColor=black)
 ![npm](https://img.shields.io/npm/v/inquirer?color=green&label=inquirer&logo=NPM&logoColor=black)
 ![npm](https://img.shields.io/npm/v/console.table?color=purple&label=console.table&logo=NPM&logoColor=black)
 ![npm](https://img.shields.io/npm/v/chalk-pipe?color=orange&label=chalk-pipe&logo=NPM&logoColor=black)
+[![HitCount](http://hits.dwyl.com/{CodingErik}/{Employee-Management-System}.svg)](http://hits.dwyl.com/{username}/{project-name})
 
 Developers are often tasked with creating interfaces that make it easy for non-developers to view and interact with information stored in databases. Often these interfaces are known as **C**ontent **M**anagement **S**ystems. In this homework assignment, your challenge is to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
 
