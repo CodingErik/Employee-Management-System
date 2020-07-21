@@ -2,8 +2,8 @@
 const inquirer = require("inquirer");
 const cTable = require('console.table');
 const { blue, red, purple, green } = require('./Develop/color.js');
-const connection = require('./model/sqlConnection');
-const QueryKey = require('./model/queryFunctions');
+const connection = require('./config/sqlConnection');
+const QueryKey = require('./config/queryFunctions');
 const util = require('util');
 
 
